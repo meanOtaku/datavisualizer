@@ -1,23 +1,67 @@
 "use client";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import Papa from "papaparse";
+import { Button } from "@/components/ui/button";
+import { useDispatch } from "react-redux";
+import { updateData } from "@/slice/dataStateSlice";
+import { falseState } from "@/slice/appStateSlice";
+import { addCardData } from "@/slice/appCardStateSlice";
 
 export function CsvReader() {
-  // const [csvData, setCsvData] = useState([]);
+    const dispatch = useDispatch();
+    const [csvFile, setCsvFile] = useState(null);
 
-  // const handleFileChange = (event: any) => {
-  //     const file = event.target.files[0];
-  //     if (file) {
-  //         // Process the file here
-  //     }
-  // };
+    const handleFileChange = (event) => {
+        setCsvFile(event.target.files[0]);
+    };
 
-  return (
-    <div>
-      {/* <input type="file" accept=".csv" /> */}
-      <Input id="picture" type="file" />
-      {/* Render the data */}
-    </div>
-  );
+    const parseCsv = () => {
+        if (csvFile) {
+            Papa.parse(csvFile, {
+                header: true, // If your CSV has a header row
+                dynamicTyping: true, // Convert numbers and booleans to their respective types
+                skipEmptyLines: false,
+                comments: "#",
+                complete: (results) => {
+                    results.data = results.data.filter((row: any) => {
+                        return (
+                            row.time !== undefined &&
+                            row.time !== null &&
+                            row.time <= 10
+                        );
+                    });
+                    const temp = results.data.slice(1);
+                    // temp = temp.slice(0, 5);
+                    dispatch(
+                        addCardData({
+                            deleteGraphData: false,
+                            graphType: "Grouped",
+                            showTgF: true,
+                            showgFx: true,
+                            showgFy: true,
+                            showgFz: true,
+                        })
+                    );
+                    dispatch(updateData(temp));
+                    // dispatch(updateData(results.data));
+                    dispatch(falseState());
+                },
+                error: (err) => {
+                    console.error("Error parsing CSV:", err);
+                },
+            });
+        }
+    };
+
+    return (
+        <div className="flex flex-row gap-4">
+            <Input type="file" accept=".csv" onChange={handleFileChange} />
+            <Button variant="outline" onClick={parseCsv}>
+                Parse CSV
+            </Button>
+        </div>
+    );
 }
 
 export default CsvReader;
