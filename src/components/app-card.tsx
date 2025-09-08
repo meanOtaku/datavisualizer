@@ -32,6 +32,10 @@ import { useEffect } from "react";
 export function AppCard(props: { id: number }) {
     const dispatch = useDispatch();
     const headerData = useSelector((state: any) => state.headerDataState.value);
+    const compareData = useSelector((state: any) => state.compareState.value);
+    const graphNameData = useSelector(
+        (state: any) => state.graphNameState.value
+    );
     const temp: { [key: string]: boolean | string } = {
         graphType: "Grouped",
     };
@@ -52,16 +56,6 @@ export function AppCard(props: { id: number }) {
     const allFormValues = form.watch();
 
     useEffect(() => {
-        // Update the Redux store whenever form values change
-        // type CardData = {
-        //     index: number;
-        //     value: {
-        //         deleteGraphData: boolean;
-        //         graphType: "Grouped" | "Seperated";
-        //         [key: string]: boolean | "Grouped" | "Seperated";
-        //     };
-        // };
-
         const temp: any = {
             index: props.id,
             value: {
@@ -88,8 +82,10 @@ export function AppCard(props: { id: number }) {
         <>
             <Card>
                 <CardHeader>
-                    <CardTitle>Graph {props.id + 1}</CardTitle>
-                    <CardDescription>Graph Properties </CardDescription>
+                    <CardTitle>Graph #{props.id + 1}</CardTitle>
+                    <CardDescription>
+                        {graphNameData[props.id]}{" "}
+                    </CardDescription>
                     <CardAction>
                         <Button
                             onClick={() => {
@@ -109,6 +105,7 @@ export function AppCard(props: { id: number }) {
                             className="space-y-8"
                         >
                             <FormField
+                                disabled={compareData}
                                 control={form.control}
                                 name="graphType"
                                 render={({ field }) => (

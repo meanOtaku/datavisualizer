@@ -25,6 +25,9 @@ import {
 
 export function Home() {
     const headerData = useSelector((state: any) => state.headerDataState.value);
+    const graphNameData = useSelector(
+        (state: any) => state.graphNameState.value
+    );
 
     const graphData = useSelector(
         (state: graphDataState) => state.dataState.value
@@ -68,6 +71,9 @@ export function Home() {
 
     return (
         <div style={{ width: "100%", height: "100%" }} className="p-10">
+            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance mb-5">
+                Home
+            </h1>
             {graphData.length === 0 && (
                 <div className="flex flex-col items-center justify-center h-full">
                     <h1 className="text-2xl font-bold mb-4">
@@ -83,7 +89,9 @@ export function Home() {
                     <Card className="mb-10" key={idx}>
                         <CardHeader>
                             <CardTitle>Graph {idx + 1}</CardTitle>
-                            <CardDescription>Ploted Graph Data</CardDescription>
+                            <CardDescription>
+                                Ploted Graph Data of {graphNameData[idx]}
+                            </CardDescription>
                             {/* <CardAction>Card Action</CardAction> */}
                         </CardHeader>
                         <CardContent>

@@ -8,6 +8,7 @@ import { updateData } from "@/slice/dataStateSlice";
 import { falseState } from "@/slice/appStateSlice";
 import { addCardData } from "@/slice/appCardStateSlice";
 import { addHeaderData } from "@/slice/appHeaderStateSlice";
+import { addGraphNameData } from "@/slice/graphNameStateSlice";
 
 export function CsvReader() {
     const dispatch = useDispatch();
@@ -32,12 +33,9 @@ export function CsvReader() {
                             row.time <= 10
                         );
                     });
-                    const temp = results.data.slice(1);
+                    // const temp = results.data.slice(1);
                     // temp = temp.slice(0, 5);
-                    const temp1: string[] = [];
-                    Object.keys(results.data[0]).forEach((item) => {
-                        if (item != "time") temp1.push(item);
-                    });
+                    const temp1: string[] = results.meta.fields?.slice(1) || [];
                     const temp2: { [key: string]: boolean | string } = {
                         deleteGraphData: false,
                         graphType: "Grouped",
@@ -46,10 +44,12 @@ export function CsvReader() {
                         temp2[item as string] = true;
                     });
 
+                    console.log(typeof csvFile.name);
+
+                    dispatch(addGraphNameData(csvFile.name));
                     dispatch(addHeaderData(temp1));
                     dispatch(addCardData(temp2));
-                    dispatch(updateData(temp));
-                    // dispatch(updateData(results.data));
+                    dispatch(updateData(results.data));
                     dispatch(falseState());
                 },
                 error: (err) => {

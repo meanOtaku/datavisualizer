@@ -34,9 +34,10 @@ export function DialogCloseButton() {
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger asChild>
+            {/* <DialogTrigger asChild>
                 <span>Upload CSV</span>
-            </DialogTrigger>
+            </DialogTrigger> */}
+            Upload CSV
             <DialogContent
                 onInteractOutside={(e) => {
                     e.preventDefault();
