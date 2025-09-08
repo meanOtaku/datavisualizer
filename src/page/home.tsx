@@ -167,6 +167,7 @@ export function Home() {
                                                 stroke="var(--foreground)"
                                             />
                                             <Brush
+                                                dataKey="time"
                                                 stroke="var(--brush-stroke)"
                                                 fill="var(--brush-fill)"
                                             />
