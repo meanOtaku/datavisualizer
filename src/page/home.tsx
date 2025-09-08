@@ -1,5 +1,5 @@
 import type { appCardDataState, graphDataState } from "@/interface";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
     LineChart,
@@ -24,6 +24,8 @@ import {
 } from "@/components/ui/card";
 
 export function Home() {
+    const headerData = useSelector((state: any) => state.headerDataState.value);
+
     const graphData = useSelector(
         (state: graphDataState) => state.dataState.value
     );
@@ -77,7 +79,7 @@ export function Home() {
                 </div>
             )}
             {graphData.map((item, idx) => (
-                <div>
+                <div key={idx}>
                     <Card className="mb-10" key={idx}>
                         <CardHeader>
                             <CardTitle>Graph {idx + 1}</CardTitle>
@@ -110,37 +112,22 @@ export function Home() {
                                             onMouseMove={handleMouseMove}
                                             onMouseUp={handleMouseUp}
                                         >
-                                            {cardData[idx].showgFx && (
-                                                <Line
-                                                    type="monotone"
-                                                    dataKey="gFx"
-                                                    stroke="var(--chart-1)"
-                                                    dot={false}
-                                                />
-                                            )}
-                                            {cardData[idx].showgFy && (
-                                                <Line
-                                                    type="monotone"
-                                                    dataKey="gFy"
-                                                    stroke="var(--chart-2)"
-                                                    dot={false}
-                                                />
-                                            )}
-                                            {cardData[idx].showgFz && (
-                                                <Line
-                                                    type="monotone"
-                                                    dataKey="gFz"
-                                                    stroke="var(--chart-3)"
-                                                    dot={false}
-                                                />
-                                            )}
-                                            {cardData[idx].showTgF && (
-                                                <Line
-                                                    type="monotone"
-                                                    dataKey="TgF"
-                                                    stroke="var(--chart-4)"
-                                                    dot={false}
-                                                />
+                                            {headerData[idx].map(
+                                                (
+                                                    lineItem: keyof (typeof cardData)[typeof idx],
+                                                    id: number
+                                                ) =>
+                                                    cardData[idx][lineItem] && (
+                                                        <Line
+                                                            key={id}
+                                                            type="monotone"
+                                                            dataKey={lineItem}
+                                                            stroke={`var(--chart-${
+                                                                id + 1
+                                                            })`}
+                                                            dot={false}
+                                                        />
+                                                    )
                                             )}
                                             <CartesianGrid
                                                 stroke="#ccc"
@@ -179,7 +166,10 @@ export function Home() {
                                                 y={0}
                                                 stroke="var(--foreground)"
                                             />
-                                            <Brush />
+                                            <Brush
+                                                stroke="var(--brush-stroke)"
+                                                fill="var(--brush-fill)"
+                                            />
                                         </LineChart>
                                     </ResponsiveContainer>
                                 ) : (
@@ -209,11 +199,89 @@ export function Home() {
                                                 <Brush
                                                     dataKey="time"
                                                     height={30}
-                                                    stroke="#8884d8"
+                                                    stroke="var(--brush-stroke)"
+                                                    fill="var(--brush-fill)"
                                                 />
                                             </LineChart>
                                         </ResponsiveContainer>
-                                        {cardData[idx].showgFx && (
+                                        {headerData[idx].map(
+                                            (headerItem, headerId) =>
+                                                cardData[idx][headerItem] && (
+                                                    <ResponsiveContainer
+                                                        width="100%"
+                                                        height={400}
+                                                        initialDimension={{
+                                                            width: 520,
+                                                            height: 400,
+                                                        }}
+                                                        key={headerId}
+                                                    >
+                                                        <LineChart
+                                                            width={600}
+                                                            height={300}
+                                                            data={item}
+                                                            syncId={"id" + idx}
+                                                            margin={{
+                                                                top: 5,
+                                                                right: 20,
+                                                                bottom: 5,
+                                                                left: 0,
+                                                            }}
+                                                        >
+                                                            <Line
+                                                                type="monotone"
+                                                                dataKey={
+                                                                    headerItem
+                                                                }
+                                                                stroke={`var(--chart-${
+                                                                    headerId + 1
+                                                                })`}
+                                                                dot={false}
+                                                            />
+
+                                                            <CartesianGrid
+                                                                stroke="#ccc"
+                                                                strokeDasharray="5 5"
+                                                            />
+                                                            <XAxis
+                                                                dataKey="time"
+                                                                domain={[
+                                                                    xDomainLeft,
+                                                                    xDomainRight,
+                                                                ]}
+                                                                // type="number"
+                                                                ticks={[
+                                                                    1, 2, 3, 4,
+                                                                    5, 6, 7, 8,
+                                                                    9, 10,
+                                                                ]}
+                                                                // tickFormatter={formatYAxisTick}
+                                                                allowDataOverflow={
+                                                                    true
+                                                                }
+                                                                label={{
+                                                                    value: "Time",
+                                                                    position:
+                                                                        "insideBottom",
+                                                                    // offset: 0,
+                                                                }}
+                                                            />
+                                                            <YAxis />
+                                                            <Tooltip
+                                                                contentStyle={{
+                                                                    backgroundColor:
+                                                                        "var(--sidebar-primary-foreground)",
+                                                                    color: "var(--sidebar-ring)",
+                                                                    borderRadius:
+                                                                        "5px",
+                                                                }}
+                                                            />
+                                                            <Legend />
+                                                        </LineChart>
+                                                    </ResponsiveContainer>
+                                                )
+                                        )}
+                                        {/* {cardData[idx].showgFx && (
                                             <ResponsiveContainer
                                                 width="100%"
                                                 height={400}
@@ -471,7 +539,7 @@ export function Home() {
                                                     <Legend />
                                                 </LineChart>
                                             </ResponsiveContainer>
-                                        )}
+                                        )} */}
                                     </div>
                                 )}
                             </div>

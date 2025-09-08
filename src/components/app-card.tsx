@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
     Card,
     CardAction,
@@ -15,7 +15,7 @@ import { deleteCardData, updateCardData } from "@/slice/appCardStateSlice";
 import { deleteData } from "@/slice/dataStateSlice";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -29,49 +29,53 @@ import {
 } from "@/components/ui/form";
 import { useEffect } from "react";
 
-const formSchema = z.object({
-    graphType: z.string().min(2, {
-        message: "Graph Type Must be selected",
-    }),
-    showTgF: z.boolean().optional(),
-    showgFx: z.boolean().optional(),
-    showgFy: z.boolean().optional(),
-    showgFz: z.boolean().optional(),
-});
-
 export function AppCard(props: { id: number }) {
     const dispatch = useDispatch();
+    const headerData = useSelector((state: any) => state.headerDataState.value);
+    const temp: { [key: string]: boolean | string } = {
+        graphType: "Grouped",
+    };
+    const temp1: Record<string, any> = {
+        graphType: z.string().min(2, {
+            message: "Graph Type Must be selected",
+        }),
+    };
+    headerData[props.id].forEach((item: string) => {
+        temp[item as string] = true;
+        temp1[item as string] = z.boolean().optional();
+    });
+    const formSchema = z.object(temp1);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            graphType: "Grouped",
-            showTgF: true,
-            showgFx: true,
-            showgFy: true,
-            showgFz: true,
-        },
+        defaultValues: temp,
     });
     const allFormValues = form.watch();
 
     useEffect(() => {
         // Update the Redux store whenever form values change
-        dispatch(
-            updateCardData({
-                index: props.id,
-                value: {
-                    deleteGraphData: false,
-                    graphType: allFormValues.graphType as
-                        | "Grouped"
-                        | "Seperated",
-                    showTgF: allFormValues.showTgF as boolean,
-                    showgFx: allFormValues.showgFx as boolean,
-                    showgFy: allFormValues.showgFy as boolean,
-                    showgFz: allFormValues.showgFz as boolean,
-                },
-            })
-        );
-        // console.log(allFormValues);
-    }, [allFormValues, dispatch, props.id]);
+        // type CardData = {
+        //     index: number;
+        //     value: {
+        //         deleteGraphData: boolean;
+        //         graphType: "Grouped" | "Seperated";
+        //         [key: string]: boolean | "Grouped" | "Seperated";
+        //     };
+        // };
+
+        const temp: any = {
+            index: props.id,
+            value: {
+                deleteGraphData: false,
+                graphType: allFormValues.graphType as "Grouped" | "Seperated",
+            },
+        };
+
+        headerData[props.id].forEach((item: string) => {
+            temp.value[item] = allFormValues[item] as boolean;
+        });
+
+        dispatch(updateCardData(temp));
+    }, [allFormValues, dispatch, headerData, props.id]);
 
     // 2. Define a submit handler.
     function onSubmit(values: z.infer<typeof formSchema>) {
@@ -144,7 +148,34 @@ export function AppCard(props: { id: number }) {
                                 )}
                             />
                             <div className="space-y-5">
-                                <FormField
+                                {headerData[props.id].map((headerItem, idx) => (
+                                    <FormField
+                                        key={idx}
+                                        control={form.control}
+                                        name={headerItem}
+                                        render={({ field }) => (
+                                            <div>
+                                                <FormItem className="flex flex-row items-center gap-2">
+                                                    <FormControl>
+                                                        <Checkbox
+                                                            onCheckedChange={
+                                                                field.onChange
+                                                            }
+                                                            checked={
+                                                                field.value
+                                                            }
+                                                        />
+                                                    </FormControl>
+                                                    <FormLabel>
+                                                        {headerItem}
+                                                    </FormLabel>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            </div>
+                                        )}
+                                    />
+                                ))}
+                                {/* <FormField
                                     control={form.control}
                                     name="showgFx"
                                     render={({ field }) => (
@@ -163,8 +194,8 @@ export function AppCard(props: { id: number }) {
                                             </FormItem>
                                         </div>
                                     )}
-                                />
-                                <FormField
+                                /> */}
+                                {/* <FormField
                                     control={form.control}
                                     name="showgFy"
                                     render={({ field }) => (
@@ -223,7 +254,7 @@ export function AppCard(props: { id: number }) {
                                             </FormItem>
                                         </div>
                                     )}
-                                />
+                                /> */}
                             </div>
                             {/* <Button type="submit">Reset</Button> */}
                         </form>

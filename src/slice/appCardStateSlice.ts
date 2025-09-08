@@ -1,16 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export interface CardDataObject {
-    deleteGraphData: boolean;
-    graphType: "Grouped" | "Seperated";
-    showTgF: boolean;
-    showgFx: boolean;
-    showgFy: boolean;
-    showgFz: boolean;
-}
-
 interface CardDataState {
-    value: CardDataObject[]; // Replace 'any' with a more specific type if possible
+    value: any[]; // Replace 'any' with a more specific type if possible
 }
 
 const initialState: CardDataState = {

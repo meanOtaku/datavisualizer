@@ -16,7 +16,7 @@ function App() {
                     <SidebarProvider>
                         <AppSidebar />
                         <Home />
-                        <Compare />
+                        {/* <Compare /> */}
                     </SidebarProvider>
                 </ThemeProvider>
             </Provider>

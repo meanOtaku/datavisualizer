@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { updateData } from "@/slice/dataStateSlice";
 import { falseState } from "@/slice/appStateSlice";
 import { addCardData } from "@/slice/appCardStateSlice";
+import { addHeaderData } from "@/slice/appHeaderStateSlice";
 
 export function CsvReader() {
     const dispatch = useDispatch();
@@ -33,16 +34,20 @@ export function CsvReader() {
                     });
                     const temp = results.data.slice(1);
                     // temp = temp.slice(0, 5);
-                    dispatch(
-                        addCardData({
-                            deleteGraphData: false,
-                            graphType: "Grouped",
-                            showTgF: true,
-                            showgFx: true,
-                            showgFy: true,
-                            showgFz: true,
-                        })
-                    );
+                    const temp1: string[] = [];
+                    Object.keys(results.data[0]).forEach((item) => {
+                        if (item != "time") temp1.push(item);
+                    });
+                    const temp2: { [key: string]: boolean | string } = {
+                        deleteGraphData: false,
+                        graphType: "Grouped",
+                    };
+                    temp1.forEach((item) => {
+                        temp2[item as string] = true;
+                    });
+
+                    dispatch(addHeaderData(temp1));
+                    dispatch(addCardData(temp2));
                     dispatch(updateData(temp));
                     // dispatch(updateData(results.data));
                     dispatch(falseState());
