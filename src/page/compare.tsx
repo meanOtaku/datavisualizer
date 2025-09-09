@@ -294,7 +294,7 @@ export function Compare() {
                                         label={{
                                             value: "Time",
                                             position: "insideBottom",
-                                            // offset: 0,
+                                            offset: -5,
                                         }}
                                     />
                                     <YAxis />
@@ -311,11 +311,11 @@ export function Compare() {
                                         y={0}
                                         stroke="var(--foreground)"
                                     />
-                                    <Brush
+                                    {/* <Brush
                                         dataKey="time"
                                         stroke="var(--brush-stroke)"
                                         fill="var(--brush-fill)"
-                                    />
+                                    /> */}
                                 </ComposedChart>
                             </ResponsiveContainer>
                         </div>
