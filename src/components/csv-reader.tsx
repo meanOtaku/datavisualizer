@@ -44,8 +44,6 @@ export function CsvReader() {
                         temp2[item as string] = true;
                     });
 
-                    console.log(typeof csvFile.name);
-
                     dispatch(addGraphNameData(csvFile.name));
                     dispatch(addHeaderData(temp1));
                     dispatch(addCardData(temp2));
