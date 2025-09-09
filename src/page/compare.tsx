@@ -250,9 +250,9 @@ export function Compare() {
                                     width={600}
                                     height={300}
                                     // data={graphData}
-                                    onMouseDown={handleMouseDown}
-                                    onMouseMove={handleMouseMove}
-                                    onMouseUp={handleMouseUp}
+                                    // onMouseDown={handleMouseDown}
+                                    // onMouseMove={handleMouseMove}
+                                    // onMouseUp={handleMouseUp}
                                 >
                                     {mergedGraphData.map(
                                         (dataSet, idx) =>
@@ -311,11 +311,11 @@ export function Compare() {
                                         y={0}
                                         stroke="var(--foreground)"
                                     />
-                                    {/* <Brush
+                                    <Brush
                                         dataKey="time"
                                         stroke="var(--brush-stroke)"
                                         fill="var(--brush-fill)"
-                                    /> */}
+                                    />
                                 </ComposedChart>
                             </ResponsiveContainer>
                         </div>
