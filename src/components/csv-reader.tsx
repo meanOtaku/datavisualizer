@@ -13,6 +13,7 @@ import { addGraphNameData } from "@/slice/graphNameStateSlice";
 export function CsvReader() {
     const dispatch = useDispatch();
     const [csvFile, setCsvFile] = useState(null);
+    const [value, setValue] = useState("10");
 
     const handleFileChange = (event) => {
         setCsvFile(event.target.files[0]);
@@ -30,7 +31,7 @@ export function CsvReader() {
                         return (
                             row.time !== undefined &&
                             row.time !== null &&
-                            row.time <= 10
+                            row.time <= value
                         );
                     });
                     // const temp = results.data.slice(1);
@@ -57,9 +58,25 @@ export function CsvReader() {
         }
     };
 
+    const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const inputValue = event.target.value;
+        // Allow only digits and a single decimal point
+        if (/^\d*\.?\d*$/.test(inputValue) || inputValue === "") {
+            setValue(inputValue);
+        }
+    };
+
     return (
         <div className="flex flex-row gap-4">
-            <Input type="file" accept=".csv" onChange={handleFileChange} />
+            <div className="flex flex-col gap-2">
+                <Input type="file" accept=".csv" onChange={handleFileChange} />
+                <Input
+                    type="text" // Use type="text" for custom validation to prevent native number input restrictions
+                    placeholder="Enter a number"
+                    value={value}
+                    onChange={handleValueChange}
+                />
+            </div>
             <Button variant="outline" onClick={parseCsv}>
                 Parse CSV
             </Button>
