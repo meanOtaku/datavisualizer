@@ -25,6 +25,9 @@ import {
 
 export function Home() {
     const headerData = useSelector((state: any) => state.headerDataState.value);
+    useEffect(() => {
+        console.log("DO NOT REMOVE");
+    }, [headerData]);
     const graphNameData = useSelector(
         (state: any) => state.graphNameState.value
     );
@@ -99,6 +102,7 @@ export function Home() {
                                 {/* Combined Graph */}
                                 {cardData[idx].graphType === "Grouped" ? (
                                     <ResponsiveContainer
+                                        key={idx}
                                         width="100%"
                                         height={400}
                                         initialDimension={{
@@ -107,6 +111,7 @@ export function Home() {
                                         }}
                                     >
                                         <LineChart
+                                            key={idx}
                                             width={600}
                                             height={300}
                                             data={item}
@@ -226,6 +231,7 @@ export function Home() {
                                                         key={headerId}
                                                     >
                                                         <LineChart
+                                                            key={headerId}
                                                             width={600}
                                                             height={300}
                                                             data={item}

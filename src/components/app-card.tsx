@@ -28,6 +28,8 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { useEffect } from "react";
+import { deleteHeaderData } from "@/slice/appHeaderStateSlice";
+import { deleteGraphNameData } from "@/slice/graphNameStateSlice";
 
 export function AppCard(props: { id: number }) {
     const dispatch = useDispatch();
@@ -92,6 +94,8 @@ export function AppCard(props: { id: number }) {
                                 // dispatch delete action here
                                 dispatch(deleteData(props.id));
                                 dispatch(deleteCardData(props.id));
+                                dispatch(deleteHeaderData(props.id));
+                                dispatch(deleteGraphNameData(props.id));
                             }}
                         >
                             <Trash2 />
