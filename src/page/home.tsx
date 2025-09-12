@@ -25,9 +25,9 @@ import {
 
 export function Home() {
     const headerData = useSelector((state: any) => state.headerDataState.value);
-    useEffect(() => {
-        console.log("DO NOT REMOVE");
-    }, [headerData]);
+    const [headerDataCopy, setHeaderDataCopy] = useState([]);
+    const [graphDataCopy, setGraphDataCopy] = useState([]);
+    const [cardDataCopy, setCardDataCopy] = useState([]);
     const graphNameData = useSelector(
         (state: any) => state.graphNameState.value
     );
@@ -39,6 +39,13 @@ export function Home() {
     const cardData = useSelector(
         (state: appCardDataState) => state.cardDataState.value
     );
+
+    useEffect(() => {
+        console.log("DO NOT REMOVE");
+        setHeaderDataCopy([...headerData]);
+        setGraphDataCopy([...graphData]);
+        setCardDataCopy([...cardData]);
+    }, [headerData, graphData, cardData]);
 
     const formatYAxisTick = (value) => {
         if (value > 0) value = Math.floor(value);
@@ -77,7 +84,7 @@ export function Home() {
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance mb-5">
                 Home
             </h1>
-            {graphData.length === 0 && (
+            {graphDataCopy.length === 0 && (
                 <div className="flex flex-col items-center justify-center h-full">
                     <h1 className="text-2xl font-bold mb-4">
                         No Data Available
@@ -87,7 +94,7 @@ export function Home() {
                     </p>
                 </div>
             )}
-            {graphData.map((item, idx) => (
+            {graphDataCopy.map((item, idx) => (
                 <div key={idx}>
                     <Card className="mb-10" key={idx}>
                         <CardHeader>
@@ -100,7 +107,7 @@ export function Home() {
                         <CardContent>
                             <div key={idx}>
                                 {/* Combined Graph */}
-                                {cardData[idx].graphType === "Grouped" ? (
+                                {cardDataCopy[idx].graphType === "Grouped" ? (
                                     <ResponsiveContainer
                                         key={idx}
                                         width="100%"
@@ -111,7 +118,6 @@ export function Home() {
                                         }}
                                     >
                                         <LineChart
-                                            key={idx}
                                             width={600}
                                             height={300}
                                             data={item}
@@ -125,12 +131,14 @@ export function Home() {
                                             onMouseMove={handleMouseMove}
                                             onMouseUp={handleMouseUp}
                                         >
-                                            {headerData[idx].map(
+                                            {headerDataCopy[idx].map(
                                                 (
                                                     lineItem: keyof (typeof cardData)[typeof idx],
                                                     id: number
                                                 ) =>
-                                                    cardData[idx][lineItem] && (
+                                                    cardDataCopy[idx][
+                                                        lineItem
+                                                    ] && (
                                                         <Line
                                                             key={id}
                                                             type="monotone"
@@ -218,9 +226,11 @@ export function Home() {
                                                 />
                                             </LineChart>
                                         </ResponsiveContainer>
-                                        {headerData[idx].map(
+                                        {headerDataCopy[idx].map(
                                             (headerItem, headerId) =>
-                                                cardData[idx][headerItem] && (
+                                                cardDataCopy[idx][
+                                                    headerItem
+                                                ] && (
                                                     <ResponsiveContainer
                                                         width="100%"
                                                         height={400}
@@ -231,7 +241,6 @@ export function Home() {
                                                         key={headerId}
                                                     >
                                                         <LineChart
-                                                            key={headerId}
                                                             width={600}
                                                             height={300}
                                                             data={item}
@@ -563,7 +572,7 @@ export function Home() {
                         <p>Card Footer</p>
                     </CardFooter> */}
                     </Card>
-                    {idx !== graphData.length - 1 && (
+                    {idx !== graphDataCopy.length - 1 && (
                         <Separator className="my-10" />
                     )}
                 </div>
