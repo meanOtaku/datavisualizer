@@ -30,6 +30,7 @@ import {
 import { useEffect } from "react";
 import { deleteHeaderData } from "@/slice/appHeaderStateSlice";
 import { deleteGraphNameData } from "@/slice/graphNameStateSlice";
+import { truncate } from "lodash";
 
 export function AppCard(props: { id: number }) {
     const dispatch = useDispatch();
@@ -86,7 +87,10 @@ export function AppCard(props: { id: number }) {
                 <CardHeader>
                     <CardTitle>Graph #{props.id + 1}</CardTitle>
                     <CardDescription>
-                        {graphNameData[props.id]}{" "}
+                        {truncate(graphNameData[props.id], {
+                            length: 17,
+                            omission: "...",
+                        })}{" "}
                     </CardDescription>
                     <CardAction>
                         <Button

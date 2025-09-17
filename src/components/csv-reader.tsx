@@ -3,15 +3,19 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import Papa from "papaparse";
 import { Button } from "@/components/ui/button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateData } from "@/slice/dataStateSlice";
 import { falseState } from "@/slice/appStateSlice";
 import { addCardData } from "@/slice/appCardStateSlice";
 import { addHeaderData } from "@/slice/appHeaderStateSlice";
 import { addGraphNameData } from "@/slice/graphNameStateSlice";
+import type { graphDataState } from "@/interface";
 
 export function CsvReader() {
     const dispatch = useDispatch();
+    const graphData = useSelector(
+        (state: graphDataState) => state.dataState.value
+    );
     const [csvFile, setCsvFile] = useState(null);
     const [value, setValue] = useState("10");
 
@@ -23,6 +27,15 @@ export function CsvReader() {
         if (csvFile) {
             Papa.parse(csvFile, {
                 header: true, // If your CSV has a header row
+                transformHeader: function (header, index) {
+                    console.log(header, index);
+
+                    // Your logic to transform the header
+                    if (header !== "time" && !header.includes("#")) {
+                        return header + "#" + (graphData.length + 1);
+                    }
+                    return header; // Return original header if no change needed
+                },
                 dynamicTyping: true, // Convert numbers and booleans to their respective types
                 skipEmptyLines: false,
                 comments: "#",
